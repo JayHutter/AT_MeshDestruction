@@ -22,6 +22,11 @@ public class CloseDoor : MonoBehaviour
 
     private void Update()
     {
+        if (!door)
+        {
+            Destroy(this);
+        }
+
         Vector3 dif = transform.position - player.transform.position;
         
         if (dif.magnitude <= closeDistance)

@@ -56,12 +56,12 @@ public class Enemy : MonoBehaviour
             body.transform.rotation = transform.rotation;
             body.transform.localScale = transform.localScale;
 
-            Slicer slc = body.GetComponent<Slicer>();
+            //Slicer slc = body.GetComponent<Slicer>();
 
-            if (!slc.BeingDestroyed())
-            {
-                slc.DestroyMesh(intersection);
-            }
+            //if (!slc.BeingDestroyed())
+            //{
+            //    slc.DestroyMesh(intersection);
+            //}
         }
 
         Destroy(gameObject);

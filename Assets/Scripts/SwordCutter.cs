@@ -88,28 +88,14 @@ public class SwordCutter : MonoBehaviour
         Plane intersection = new Plane();
         intersection.SetNormalAndPosition(planeNormal, startPoint);
 
+        var slice = other.gameObject.GetComponent<Slice>();
+        if (!slice)
+        {
+            slice = other.gameObject.AddComponent<Slice>();
+        }
+        slice.SliceObject(intersection);
+
         GameObject obj = other.gameObject;
-        Enemy enemy = obj.GetComponentInParent<Enemy>();
-
-        if (enemy)
-        {
-            Debug.Log("CUT ENEMY");
-            enemy.Cut(intersection);
-        }
-        else
-        {
-            Slicer slc = obj.GetComponent<Slicer>();
-
-            if (!slc)
-            {
-                slc = obj.AddComponent<Slicer>();
-            }
-
-            if (!slc.BeingDestroyed())
-            {
-                slc.DestroyMesh(intersection);
-            }
-        }
 
         if (obj.tag == "Enemy")
         {

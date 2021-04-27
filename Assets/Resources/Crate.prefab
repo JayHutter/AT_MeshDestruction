@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1541882362464809794}
   - component: {fileID: 1541882362464809793}
   - component: {fileID: 315381052}
-  - component: {fileID: 315381051}
+  - component: {fileID: 1651223236799075905}
   m_Layer: 8
   m_Name: Crate
   m_TagString: Untagged
@@ -111,7 +111,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &315381051
+--- !u!114 &1651223236799075905
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -120,15 +120,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1541882362464809792}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4feb15aa0f27a584d880551ab46786f4, type: 3}
+  m_Script: {fileID: 11500000, guid: e91492cb6293e444b87481ce0de15cf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CutCascades: 1
-  ExplodeForce: 10000
+  fillHole: 1
   minSize: 20
-  checkSize: 0
-  fillHole: 0
-  checkOverlap: 1
-  destroyParticleMaterial: {fileID: 0}
-  mass: 200
-  carryTag: 1
+  cullSmallSizes: 1
+  deletionDelay: 2
+  DestroyParticle: {fileID: 0}

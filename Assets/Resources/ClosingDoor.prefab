@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 6235543961061150541}
   - component: {fileID: 6235543961061150530}
   - component: {fileID: 6235543961061150531}
-  - component: {fileID: 6235543961061150542}
+  - component: {fileID: 7142930833633885909}
   m_Layer: 8
   m_Name: Door
   m_TagString: Untagged
@@ -391,7 +391,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
---- !u!114 &6235543961061150542
+--- !u!114 &7142930833633885909
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -400,15 +400,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6235543961061150528}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4feb15aa0f27a584d880551ab46786f4, type: 3}
+  m_Script: {fileID: 11500000, guid: e91492cb6293e444b87481ce0de15cf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CutCascades: 1
-  ExplodeForce: 10000
-  minSize: 20
-  checkSize: 0
   fillHole: 1
-  checkOverlap: 1
-  destroyParticleMaterial: {fileID: 0}
-  mass: 500
-  carryTag: 1
+  minSize: 250
+  cullSmallSizes: 1
+  deletionDelay: 2
+  destroyParticle: {fileID: 0}

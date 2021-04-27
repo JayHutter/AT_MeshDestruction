@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: 6235543960496830666, guid: d51f7bbc5a17249468091ec3d9e02e07,
         type: 3}
       propertyPath: m_Name
-      value: ClosingDoor
+      value: ClosingDoor Variant
       objectReference: {fileID: 0}
     - target: {fileID: 6235543960496830676, guid: d51f7bbc5a17249468091ec3d9e02e07,
         type: 3}
@@ -26762,5 +26762,6 @@ PrefabInstance:
       propertyPath: m_SharedVertices.Array.data[97].m_Vertices.Array.data[3]
       value: 383
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6235543961061150542, guid: d51f7bbc5a17249468091ec3d9e02e07, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: d51f7bbc5a17249468091ec3d9e02e07, type: 3}
