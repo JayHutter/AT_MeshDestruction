@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class Slice : MonoBehaviour
@@ -10,6 +11,7 @@ public class Slice : MonoBehaviour
     Plane intersectionPlane;
 
     List<Vector3> newVerts;
+    List<Vector2> newUvs;
 
     public bool fillHole = true;
     public float minSize = 20.0f;
@@ -20,6 +22,14 @@ public class Slice : MonoBehaviour
     private bool deleting = false;
 
     public Material destroyParticle;
+
+    bool setOrigin = false;
+    Vector3 originVert;
+    Vector2 originUv;
+    Plane gapPlane = new Plane();
+
+    float startTime = 0;
+    float endTime = 0;
 
     private void Start()
     {
@@ -33,6 +43,8 @@ public class Slice : MonoBehaviour
 
     public void SliceObject(Plane intersection)
     {
+        startTime = Time.time;
+
         intersectionPlane = intersection;
         Mesh ogMesh = gameObject.GetComponent<MeshFilter>().mesh;
         vertsOrig = ogMesh.vertices;
@@ -40,7 +52,7 @@ public class Slice : MonoBehaviour
         trisOrig = ogMesh.triangles;
         uvsOrig = ogMesh.uv;
         newVerts = new List<Vector3>();
-
+        newUvs = new List<Vector2>();
 
         List<int> trisPos = new List<int>();
         List<int> trisNeg = new List<int>();
@@ -84,14 +96,12 @@ public class Slice : MonoBehaviour
             }
         }
 
-        if (fillHole)
-        {
-            FillGap(trisPos, vertsPos, normalsPos, uvsPos);
-            FillGap(trisNeg, vertsNeg, normalsNeg, uvsNeg);
-        }
-
         CreateSliceObject(trisPos, vertsPos, normalsPos, uvsPos);
         CreateSliceObject(trisNeg, vertsNeg, normalsNeg, uvsNeg);
+
+        endTime = Time.time;
+
+        OutputTimeToFile();
     }
 
     private void CopyTri(int i, List<int> tris, List<Vector3> verts, List<Vector3> normals, List<Vector2> uvs)
@@ -133,7 +143,6 @@ public class Slice : MonoBehaviour
         float Lerp2;
         Vector3 cutVert1 = PointOnPlane(aloneVert, vert1, out Lerp1);
         Vector3 cutVert2 = PointOnPlane(aloneVert, vert2, out Lerp2);
-
         newVerts.Add(cutVert1);
         newVerts.Add(cutVert2);
 
@@ -142,7 +151,14 @@ public class Slice : MonoBehaviour
 
         Vector2 cutUv1 = Vector2.Lerp(aloneUv, uv1, Lerp1);
         Vector2 cutUv2 = Vector2.Lerp(aloneUv, uv2, Lerp2);
+        newUvs.Add(cutUv1);
+        newUvs.Add(cutUv2);
 
+        if (fillHole)
+        {
+            AddSlice(trisPos, vertsPos, normalsPos, uvsPos, cutVert1, cutVert2, intersectionPlane.normal * -1, cutUv1, cutUv2);
+            AddSlice(trisNeg, vertsNeg, normalsNeg, uvsNeg, cutVert1, cutVert2, intersectionPlane.normal, cutUv1, cutUv2);
+        }
 
         if (intersectionPlane.GetSide(aloneVert))
         {
@@ -157,6 +173,8 @@ public class Slice : MonoBehaviour
             AddTri(trisNeg, vertsNeg, normalsNeg, uvsNeg, cutVert1, cutNormal1, cutUv1);
             AddTri(trisNeg, vertsNeg, normalsNeg, uvsNeg, vert2, normal2, uv2);
             AddTri(trisNeg, vertsNeg, normalsNeg, uvsNeg, cutVert2, cutNormal2, cutUv2);
+
+               
         }
         else
         {
@@ -195,15 +213,25 @@ public class Slice : MonoBehaviour
         return vert2;
     }
 
-    private void FillGap(List<int> tris, List<Vector3> verts, List<Vector3> normals, List<Vector2> uvs)
+    private void AddSlice(List<int> tris, List<Vector3> verts, List<Vector3> normals, List<Vector2> uvs, 
+        Vector3 vert1, Vector3 vert2, Vector3 normal, Vector2 uv1, Vector2 uv2)
     {
-        Vector3 origin = newVerts[0];
-        for (int i=1; i < newVerts.Count-1; i++)
+        if (!setOrigin)
         {
-            AddTri(tris, verts, normals, uvs, origin, Vector3.zero, Vector2.zero);
-            AddTri(tris, verts, normals, uvs, newVerts[i], Vector3.zero, Vector2.zero);
-            AddTri(tris, verts, normals, uvs, newVerts[i+1], Vector3.zero, Vector2.zero);
+            originVert = vert1;
+            originUv = uv1;
+            setOrigin = true;
+            return;
         }
+
+        gapPlane.Set3Points(originVert, vert1, vert2);
+
+        Vector3 vertA = gapPlane.GetSide(originVert + normal) ? vert1 : vert2;
+        Vector3 vertB = gapPlane.GetSide(originVert + normal) ? vert2 : vert1;
+
+        AddTri(tris, verts, normals, uvs, originVert, normal, originUv);
+        AddTri(tris, verts, normals, uvs, vertA, normal, uv1);
+        AddTri(tris, verts, normals, uvs, vertB, normal, uv2);
     }
 
     private void CreateSliceObject(List<int> tris, List<Vector3> verts, List<Vector3> normals, List<Vector2> uvs)
@@ -358,5 +386,18 @@ public class Slice : MonoBehaviour
         Debug.Log("BOOM");
 
         Destroy(gameObject);
+    }
+
+
+    private void OutputTimeToFile()
+    {
+        string data = gameObject.name + "\n" +
+                      "Start- " + startTime +
+                      "\nEnd- " + endTime +
+                      "\nDelay- " + (endTime - startTime) + "\n";
+
+        StreamWriter writer = new StreamWriter("SliceTimes.txt", true);
+        writer.WriteLine(data);
+        writer.Close();
     }
 }
